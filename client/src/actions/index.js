@@ -18,16 +18,15 @@ export const submitSurvey = (values, history) => async dispatch => {
 };
 export const onLogin = (values, history) => async dispatch => {
 	console.log(values)
-  const res = await axios.post('/api/local', values);
+  const res = await axios.post('/api/login', values);
 
-  history.push('/surveys');
+	localStorage.setItem('token', res.data.token)
+	history.push('/surveys');
   dispatch({ type: FETCH_USER, payload: res.data });
 };
 export const onSignUp = (values, history) => async dispatch => {
-	console.log(values)
 	const res = await axios.post('/api/signUp', values);
-	console.log(res)
-	history.push('/surveys');
+	// history.push('/surveys');
   dispatch({ type: FETCH_USER, payload: res.data });
 };
 export const fetchSurveys = () => async dispatch => {

@@ -8,6 +8,11 @@ function tokenForUser(user) {
 	return jwt.encode({ sub: user.id, iat: timestamp }, 'jsadfkjaslfkj3oi')
 }
 
+exports.login = function(req, res, next) {
+	console.log('hit authentication.js')
+  res.send({ token: tokenForUser(req.user) });
+};
+
 exports.signup = function(req, res, next) {
 	console.log('hit signup')
 	const email = req.body.email

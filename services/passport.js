@@ -1,6 +1,8 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const keys = require('../config/keys');
 const mongoose = require('mongoose');
 
@@ -41,6 +43,7 @@ const localOptions = { usernameField: 'email', passwordField: 'password' };
 passport.use(
   new LocalStrategy(localOptions, function(email, password, done) {
     User.findOne({ email: email }, function(err, user) {
+			console.log('findOne localStrategy')
       if (err) {
         return done(err);
       }
@@ -62,3 +65,22 @@ passport.use(
     });
   })
 );
+
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: 'jsadfkjaslfkj3oi'
+};
+
+const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+  User.findById(payload.sub, function(err, user) {
+    if (err) {
+      return done(err, false);
+    }
+
+    if (user) {
+      done(null, user);
+    } else {
+      done(null, false);
+    }
+  });
+});

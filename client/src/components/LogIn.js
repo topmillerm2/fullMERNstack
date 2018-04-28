@@ -3,10 +3,11 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import * as actions from '../actions/index';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 class LogIn extends Component {
   onSubmit = values => {
-    this.props.onLogin(values);
+    this.props.onLogin(values, this.props.history);
   };
 
   render() {
@@ -14,9 +15,9 @@ class LogIn extends Component {
       <div>
         <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
           <label>Email</label>
-          <Field type="text" name="loginEmail" component="input" />
+          <Field type="text" name="email" component="input" />
           <label>Password</label>
-          <Field type="text" name="loginPassword" component="input" />
+          <Field type="text" name="password" component="input" />
           <Link to="/surveys" className="red btn-flat white-text">
             Cancel
           </Link>
@@ -33,8 +34,8 @@ class LogIn extends Component {
   }
 }
 
-export default connect(null, actions)(
+export default withRouter(connect(null, actions)(
   reduxForm({
     form: 'logInForm'
   })(LogIn)
-);
+));

@@ -1,5 +1,6 @@
 const passport = require('passport');
 const authentication = require('../controllers/authentication');
+require('../services/passport');
 
 module.exports = app => {
   app.get(
@@ -9,22 +10,25 @@ module.exports = app => {
     })
   );
   app.post(
-    '/api/local',
+    '/api/login',
     passport.authenticate('local', {
+      // successRedirect: '/api/login',
       session: false
-    })
+    }),
+    authentication.login
   );
-  app.post(
-    '/api/signUp',
-    // passport.authenticate('local', {
-    //   session: false
-    // }),
-    authentication.signup
-  );
+  app.post('/api/signUp', authentication.signup);
 
   app.get(
     '/auth/google/callback',
     passport.authenticate('google'),
+    (req, res) => {
+      res.redirect('/surveys');
+    }
+  );
+  app.get(
+    '/api/login',
+    // passport.authenticate('local'),
     (req, res) => {
       res.redirect('/surveys');
     }
