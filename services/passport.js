@@ -1,5 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const keys = require('../config/keys');
 const mongoose = require('mongoose');
 
@@ -34,4 +35,30 @@ passport.use(
       done(null, user);
     }
   )
+);
+
+const localOptions = { usernameField: 'email', passwordField: 'password' };
+passport.use(
+  new LocalStrategy(localOptions, function(email, password, done) {
+    User.findOne({ email: email }, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+				console.log('no user')
+        return done(null, false);
+      }
+
+      user.comparePassword(password, function(err, isMatch) {
+        if (err) {
+          return done(err);
+        }
+        if (!isMatch) {
+          return done(null, false);
+        }
+
+        return done(null, user);
+      });
+    });
+  })
 );

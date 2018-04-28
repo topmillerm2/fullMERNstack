@@ -16,6 +16,20 @@ export const submitSurvey = (values, history) => async dispatch => {
   history.push('/surveys');
   dispatch({ type: FETCH_USER, payload: res.data });
 };
+export const onLogin = (values, history) => async dispatch => {
+	console.log(values)
+  const res = await axios.post('/api/local', values);
+
+  history.push('/surveys');
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
+export const onSignUp = (values, history) => async dispatch => {
+	console.log(values)
+	const res = await axios.post('/api/signUp', values);
+	console.log(res)
+	history.push('/surveys');
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
 export const fetchSurveys = () => async dispatch => {
   const res = await axios.get('/api/surveys');
 	console.log(res.data)
